@@ -6,6 +6,6 @@ set -e
 
 echo "3. creating and starting db container"
 
-docker-compose -f docker-compose.yaml up --detach
+docker-compose -f docker-compose.yml up --detach
 
 echo "- all OK"
