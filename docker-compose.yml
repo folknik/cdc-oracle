@@ -1,0 +1,205 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0.amd64
+    hostname: zookeeper
+    container_name: zookeeper
+    networks:
+      - internal
+    ports:
+      - 2181:2181
+      - 9201:9201
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 200
+
+
+  kafka:
+    image: confluentinc/cp-server:7.5.0.amd64
+    hostname: kafka
+    container_name: kafka
+    networks:
+      - internal
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+      - 9202:9202
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka:29092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.0.amd64
+    hostname: schema-registry
+    container_name: schema-registry
+    networks:
+      - internal
+    depends_on:
+      - kafka
+      - zookeeper
+    ports:
+      - 8081:8081
+      - 9203:9203
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka:29092'
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
+      SCHEMA_REGISTRY_AVRO_COMPATIBILITY_LEVEL: 'backward'
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
+      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+
+
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect:7.5.0.amd64
+    hostname: kafka-connect
+    container_name: kafka-connect
+    networks:
+      - internal
+    depends_on:
+      - kafka
+      - schema-registry
+    ports:
+      - 8083:8083
+      - 9204:9204
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -sf http://localhost:8083/connectors || exit 1" ]
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: 'kafka:29092'
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_REST_ADVERTISED_PORT: "8083"
+      CONNECT_LISTENERS: "http://0.0.0.0:8083"
+
+      CONNECT_GROUP_ID: compose-connect-group
+      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+
+      CONNECT_TOPIC_CREATION_ENABLE: "true"
+      CONNECT_TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR: 1
+      CONNECT_TOPIC_CREATION_DEFAULT_PARTITIONS: 1
+
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
+      # CLASSPATH required due to CC-2422
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.5.0.jar
+      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+
+      # CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_LOG4J_LOGGERS: >
+        org.apache.zookeeper=ERROR,
+        org.I0Itec.zkclient=ERROR,
+        org.reflections=ERROR,
+        io.debezium.connector.oracle.olr=DEBUG,
+        io.debezium.connector.oracle=DEBUG,
+        io.debezium.pipeline=DEBUG,
+        io.debezium.relational=DEBUG
+      # (необязательно) сделать лог-строку информативнее
+      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d{ISO8601}] %-5p %c{2} - %m%n"
+
+      CONNECT_CONFIG_PROVIDERS: 'file'
+      CONNECT_CONFIG_PROVIDERS_FILE_CLASS: "org.apache.kafka.common.config.provider.FileConfigProvider"
+    volumes:
+      - ./custom-connectors:/usr/share/confluent-hub-components
+
+
+  # https://github.com/redpanda-data/console/blob/master/docs/local/docker-compose.yaml
+  redpanda-console:
+    hostname: redpanda-console
+    container_name: redpanda-console
+    image: redpandadata/console:v2.4.3
+    networks:
+      - internal
+    entrypoint: /bin/sh
+    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /bin/sleep 15; /app/console"
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["kafka:29092"]
+          schemaRegistry:
+            enabled: true
+            urls: ["http://schema-registry:8081"]
+        connect:
+          enabled: true
+          clusters:
+            - name: connect
+              url: http://kafka-connect:8083
+    ports:
+      - 8080:8080
+    depends_on:
+      - kafka
+      - kafka-connect
+      - schema-registry
+
+
+
+  oracle:
+    image: "${DB_IMAGE}"
+    hostname: oracle
+    container_name: "${DB_CONTAINER}"
+    volumes:
+      - ./fra:/opt/oracle/fra
+      - ./oradata:/opt/oracle/oradata
+      - ./sql:/opt/sql
+      - ./setup:/opt/oracle/scripts/setup
+    networks:
+      - internal
+    ports:
+      - 1521:1521
+    environment:
+      - ORACLE_CHARACTERSET=AL32UTF8
+    build:
+      context: .
+      shm_size: '1gb'
+    shm_size: '1gb'
+
+
+  openlogreplicator:
+    image: "${OLR_IMAGE}"
+    hostname: openlogreplicator
+    container_name: "${OLR_CONTAINER}"
+    depends_on:
+      - oracle
+    ports:
+      - 9070:9070
+    volumes:
+      - ./checkpoint:/opt/OpenLogReplicator/checkpoint
+      - ./fra:/opt/fra
+      - ./log:/opt/OpenLogReplicator/log
+      - ./oradata:/opt/oradata
+      - ./output:/opt/output
+      - ./scripts:/opt/OpenLogReplicator/scripts
+    restart: "no"
+    networks:
+      - internal
+
+networks:
+  internal:
