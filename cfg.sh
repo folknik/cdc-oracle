@@ -2,7 +2,7 @@
 
 export DB_IMAGE=${DB_IMAGE:=oracle/database:21.3.0-xe}
 export DB_CONTAINER=${DB_CONTAINER:=ORA1}
-export OLR_IMAGE=${OLR_IMAGE:=bersler/openlogreplicator:debian-13.0}
+export OLR_IMAGE=${OLR_IMAGE:=bersler/openlogreplicator:debian-12.0}
 export OLR_CONTAINER=${OLR_CONTAINER:=OLR1}
 export CONFLUENTINC_IMAGE_VERSION=${CONFLUENTINC_IMAGE_VERSION:=7.5.0}
 export REDPANDA_CONSOLE_IMAGE=${REDPANDA_CONSOLE_IMAGE:=redpandadata/console:v2.4.3}
