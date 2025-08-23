@@ -50,7 +50,7 @@ sqlplus sys/123@//localhost:1521/XE as sysdba <<- EOF
 
   GRANT CREATE SESSION TO c##dbzuser CONTAINER=ALL;
   GRANT SET CONTAINER TO c##dbzuser CONTAINER=ALL;
-  GRANT SELECT ON V_\$DATABASE TO c##dbzuser CONTAINER=ALL;
+  GRANT SELECT ON V_$DATABASE TO c##dbzuser CONTAINER=ALL;
   GRANT SELECT ANY DICTIONARY TO c##dbzuser CONTAINER=ALL;
   GRANT LOCK ANY TABLE TO c##dbzuser CONTAINER=ALL;
   -- These can be reduced from ANY TABLE to your captured tables depending on your security model
@@ -58,7 +58,7 @@ sqlplus sys/123@//localhost:1521/XE as sysdba <<- EOF
   GRANT FLASHBACK ANY TABLE TO c##dbzuser CONTAINER=ALL;
 
   -- OpenLogReplicator specific permissions
-  ALTER SESSION SET CONTAINER = ORCLPDB1;
+  ALTER SESSION SET CONTAINER = XEPDB1;
   GRANT SELECT, FLASHBACK ON SYS.CCOL$ TO c##dbzuser;
   GRANT SELECT, FLASHBACK ON SYS.CDEF$ TO c##dbzuser;
   GRANT SELECT, FLASHBACK ON SYS.COL$ TO c##dbzuser;
