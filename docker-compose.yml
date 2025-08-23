@@ -1,6 +1,6 @@
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0.amd64
+    image: "confluentinc/cp-zookeeper:${CONFLUENTINC_IMAGE_VERSION}"
     hostname: zookeeper
     container_name: zookeeper
     networks:
@@ -14,7 +14,7 @@ services:
 
 
   kafka:
-    image: confluentinc/cp-server:7.5.0.amd64
+    image: "confluentinc/cp-server:${CONFLUENTINC_IMAGE_VERSION}"
     hostname: kafka
     container_name: kafka
     networks:
@@ -47,7 +47,7 @@ services:
 
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.5.0.amd64
+    image: "confluentinc/cp-schema-registry:${CONFLUENTINC_IMAGE_VERSION}"
     hostname: schema-registry
     container_name: schema-registry
     networks:
@@ -68,7 +68,7 @@ services:
 
 
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:7.5.0.amd64
+    image: "confluentinc/cp-kafka-connect:${CONFLUENTINC_IMAGE_VERSION}"
     hostname: kafka-connect
     container_name: kafka-connect
     networks:
@@ -132,9 +132,9 @@ services:
 
   # https://github.com/redpanda-data/console/blob/master/docs/local/docker-compose.yaml
   redpanda-console:
+    image: "${REDPANDA_CONSOLE_IMAGE}"
     hostname: redpanda-console
     container_name: redpanda-console
-    image: redpandadata/console:v2.4.3
     networks:
       - internal
     entrypoint: /bin/sh
