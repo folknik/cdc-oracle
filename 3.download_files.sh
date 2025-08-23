@@ -8,9 +8,9 @@ tar -xvzf /tmp/debezium-connector-oracle-2.7.4.Final-plugin.tar.gz -C /home/cust
 
 
 echo "2. download OpenLogReplicator v1.3.0"
-mkdir -p /home/openlogreplicator-docker
-wget https://github.com/bersler/OpenLogReplicator/archive/refs/tags/v1.3.0.tar.gz -O /tmp/openlogreplciator_1.3.0.tar.gz
-tar -xvzf /tmp/openlogreplciator_1.3.0.tar.gz -C /home/openlogreplicator-docker
+mkdir -p /home
+git clone https://github.com/bersler/OpenLogReplicator-docker.git openlogreplicator-docker
+
 
 
 echo "2. download Oracle 21c XE"
