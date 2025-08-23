@@ -28,3 +28,13 @@ The demo project includes the following components:
 - Docker and Docker Compose installed  
 - At least 8 GB of RAM recommended  
 - Basic knowledge of Oracle and Kafka
+
+
+## Usage
+
+Clone the repository:
+
+```bash
+cd /home
+git clone https://github.com/folknik/cdc-oracle.git .
+```
