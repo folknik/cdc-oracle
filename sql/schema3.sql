@@ -10,6 +10,10 @@ GRANT LOCK ANY TABLE TO c##dbzuser CONTAINER=ALL;
 -- These can be reduced from ANY TABLE to your captured tables depending on your security model
 GRANT SELECT ANY TABLE TO c##dbzuser CONTAINER=ALL;
 GRANT FLASHBACK ANY TABLE TO c##dbzuser CONTAINER=ALL;
+GRANT SELECT_CATALOG_ROLE    TO c##dbzuser CONTAINER=ALL;
+GRANT EXECUTE_CATALOG_ROLE   TO c##dbzuser CONTAINER=ALL;
+GRANT SELECT ANY TRANSACTION TO c##dbzuser CONTAINER=ALL;
+
 
 -- OpenLogReplicator specific permissions
 ALTER SESSION SET CONTAINER = XEPDB1;
