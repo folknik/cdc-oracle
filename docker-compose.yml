@@ -175,6 +175,7 @@ services:
     ports:
       - 1521:1521
     environment:
+      - ORACLE_PWD=123
       - ORACLE_CHARACTERSET=AL32UTF8
     build:
       context: .

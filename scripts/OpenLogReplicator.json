@@ -1,6 +1,6 @@
 {
   "version": "1.8.5",
-  "log-level": 3,
+  "log-level": 4,
   "source": [
     {
       "alias": "S1",
@@ -8,17 +8,12 @@
       "reader": {
         "type": "online",
         "path-mapping": ["/opt/oracle/oradata", "/opt/oradata", "/opt/oracle/fra", "/opt/fra"],
-        "user": "C##USR1",
-        "password": "USR1PWD",
+        "user": "c##dbzuser",
+        "password": "dbz",
         "server": "//oracle:1521/XEPDB1"
       },
       "format": {
         "type": "json"
-      },
-      "filter": {
-        "table": [
-          {"owner": "USR1", "table": "ADAM.*"}
-        ]
       }
     }
   ],

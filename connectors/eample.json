@@ -4,12 +4,11 @@
     "tasks.max": "1",
 
     "database.connection.adapter": "olr",
-    "database.dbname": "XEPDB1",
     "database.hostname": "oracle",
-    "database.password": "USR1PWD",
     "database.port": "1521",
-    "database.user": "C##USR1",
-
+    "database.user": "c##dbzuser",
+    "database.password": "dbz",
+    "database.dbname": "XEPDB1",
 
     "openlogreplicator.host": "openlogreplicator",
     "openlogreplicator.port": "9070",
