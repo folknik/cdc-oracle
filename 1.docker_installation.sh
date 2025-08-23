@@ -11,8 +11,6 @@ echo "- Installing Docker OK"
 
 
 echo "Step 2 — Executing the Docker Command Without Sudo"
-sudo usermod -aG docker ${USER}
-su - ${USER}
 sudo usermod -aG docker root
 echo "- Executing the Docker Command Without Sudo OK"
 
