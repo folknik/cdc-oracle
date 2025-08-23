@@ -12,7 +12,7 @@ sql() {
     docker exec ${DB_CONTAINER} /bin/bash -c "export NLS_LANG=american_america.AL32UTF8
 export ORACLE_SID=XE
 . oraenv
-sqlplus sys/123@//localhost:1521/XE as sysdba <<- EOF
+sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
 set echo off
 set verify off
 set heading off
