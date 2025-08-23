@@ -1,9 +1,10 @@
 #!/bin/bash
 
 echo "1. build OpenLogReplicator v1.3.0"
-su - olruser
-cd /home/openlogreplicator-docker
-bash ./build-prod.sh
+sudo -u olruser bash -c '
+  cd /home/openlogreplicator-docker || exit 1
+  bash ./build-prod.sh
+'
 echo "- build OpenLogReplicator OK"
 
 
