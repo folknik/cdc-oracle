@@ -77,22 +77,24 @@ sqlplus sys/123@//localhost:1521/XE as sysdba <<- EOF
   GRANT SELECT, FLASHBACK ON XDB.XDB$TTSET TO c##dbzuser;
 
   DECLARE
-  CURSOR C1 IS SELECT TOKSUF FROM XDB.XDB$TTSET;
-  CMD VARCHAR2(2000);
+    v_sql VARCHAR2(4000);
   BEGIN
-  FOR C IN C1 LOOP
-          CMD := 'GRANT SELECT, FLASHBACK ON XDB.X$NM' || C.TOKSUF || ' TO c##dbzuser';
-  EXECUTE IMMEDIATE CMD;
-  CMD := 'GRANT SELECT, FLASHBACK ON XDB.X$QN' || C.TOKSUF || ' TO c##dbzuser';
-  EXECUTE IMMEDIATE CMD;
-  CMD := 'GRANT SELECT, FLASHBACK ON XDB.X$PT' || C.TOKSUF || ' TO c##dbzuser';
-  EXECUTE IMMEDIATE CMD;
-  END LOOP;
+    FOR r IN (
+      SELECT owner, object_name
+      FROM   all_objects
+      WHERE  owner = 'XDB'
+         AND object_type IN ('TABLE','VIEW')
+         AND object_name LIKE 'X$%'
+    ) LOOP
+      BEGIN
+        v_sql := 'GRANT SELECT, FLASHBACK ON '||r.owner||'."'||r.object_name||'" TO c##dbzuser';
+        EXECUTE IMMEDIATE v_sql;
+      EXCEPTION
+        WHEN OTHERS THEN NULL; -- пропустим то, что нельзя/не нужно
+      END;
+    END LOOP;
   END;
   /
-
-  ALTER SESSION SET CONTAINER = CDB$ROOT;
-  ALTER SYSTEM ARCHIVE LOG CURRENT;
 
   exit;
 EOF
