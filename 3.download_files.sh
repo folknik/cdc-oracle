@@ -14,9 +14,10 @@ git clone https://github.com/bersler/OpenLogReplicator-docker.git openlogreplica
 
 
 echo "2. download Oracle 21c XE"
-rpm -i https://www.oracle.com/webapps/redirect/signon?nexturl=https://download.oracle.com/otn/linux/oracle21c/oracle-database-ee-21c-1.0-1.ol7.x86_64.rpm
+mkdir -p /home/oracle-rpm-package
+curl -L https://www.oracle.com/webapps/redirect/signon?nexturl=https://download.oracle.com/otn/linux/oracle21c/oracle-database-ee-21c-1.0-1.ol7.x86_64.rpm -o /home/oracle-rpm-package/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm
 git clone https://github.com/oracle/docker-images.git oracle-docker
-mv rpm/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm /home/oracle-docker/OracleDatabase/SingleInstance/dockerfiles/21.3.0
+mv /home/oracle-rpm-package/oracle-database-xe-21c-1.0-1.ol8.x86_64.rpm /home/oracle-docker/OracleDatabase/SingleInstance/dockerfiles/21.3.0
 
 
 echo "- all OK"
