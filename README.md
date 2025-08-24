@@ -10,7 +10,7 @@ The demo project includes the following components:
 - **Oracle Database 21c XE**  
   Lightweight edition of Oracle Database, serving as the source system for change capture.
 
-- **OpenLogReplicator v1.3.0**  
+- **OpenLogReplicator v1.8.6**  
   An open-source tool for parsing Oracle redo/archived logs and streaming changes to external systems.
 
 - **Debezium Oracle Connector v2.7.4**  
