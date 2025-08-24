@@ -53,3 +53,5 @@ if [ -d output ]; then
 fi
 
 sudo rm -f sql/*.out
+
+echo "- all OK"
