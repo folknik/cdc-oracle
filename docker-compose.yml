@@ -187,6 +187,9 @@ services:
     image: "${OLR_IMAGE}"
     hostname: openlogreplicator
     container_name: "${OLR_CONTAINER}"
+    user: "1000:54322"
+    group_add:
+      - "54321"
     depends_on:
       - oracle
     ports:
