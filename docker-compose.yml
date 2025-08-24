@@ -160,7 +160,6 @@ services:
       - schema-registry
 
 
-
   oracle:
     image: "${DB_IMAGE}"
     hostname: oracle
