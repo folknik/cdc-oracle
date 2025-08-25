@@ -10,7 +10,7 @@
         "path-mapping": ["/opt/oracle/oradata", "/opt/oradata", "/opt/oracle/fra", "/opt/fra"],
         "user": "c##dbzuser",
         "password": "dbz",
-        "server": "//oracle:1521/XE"
+        "server": "//oracle:1521/XEPDB1"
       },
       "format": {
         "type": "json"
