@@ -1,9 +1,9 @@
 #!/bin/bash
 
-echo "1. download Debezium connector Oracle 2.7.40"
+echo "1. download Debezium connector Oracle 3.2.1"
 mkdir -p /home/custom-connectors
-wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-oracle/2.7.4.Final/debezium-connector-oracle-2.7.4.Final-plugin.tar.gz -O /tmp/debezium-connector-oracle-2.7.4.Final-plugin.tar.gz
-tar -xvzf /tmp/debezium-connector-oracle-2.7.4.Final-plugin.tar.gz -C /home/custom-connectors
+wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-oracle/3.2.1.Final/debezium-connector-oracle-3.2.1.Final-plugin.tar.gz -O /tmp/debezium-connector-oracle-3.2.1.Final-plugin.tar.gz
+tar -xvzf /tmp/debezium-connector-oracle-3.2.1.Final-plugin.tar.gz -C /home/custom-connectors
 echo "- download Debezium connector Oracle OK"
 
 
