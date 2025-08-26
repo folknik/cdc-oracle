@@ -39,32 +39,32 @@ services:
       KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      # KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka:29092
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
 
 
-  schema-registry:
-    image: "confluentinc/cp-schema-registry:${CONFLUENTINC_IMAGE_VERSION}"
-    hostname: schema-registry
-    container_name: schema-registry
-    networks:
-      - internal
-    depends_on:
-      - kafka
-      - zookeeper
-    ports:
-      - 8081:8081
-      - 9203:9203
-    environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka:29092'
-      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
-      SCHEMA_REGISTRY_AVRO_COMPATIBILITY_LEVEL: 'backward'
-      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
-      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+#  schema-registry:
+#    image: "confluentinc/cp-schema-registry:${CONFLUENTINC_IMAGE_VERSION}"
+#    hostname: schema-registry
+#    container_name: schema-registry
+#    networks:
+#      - internal
+#    depends_on:
+#      - kafka
+#      - zookeeper
+#    ports:
+#      - 8081:8081
+#      - 9203:9203
+#    environment:
+#      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+#      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://kafka:29092'
+#      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
+#      SCHEMA_REGISTRY_AVRO_COMPATIBILITY_LEVEL: 'backward'
+#      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS: GET,POST,PUT,OPTIONS
+#      SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
 
 
   kafka-connect:
@@ -75,7 +75,7 @@ services:
       - internal
     depends_on:
       - kafka
-      - schema-registry
+      # - schema-registry
     ports:
       - 8083:8083
       - 9204:9204
@@ -100,10 +100,10 @@ services:
       CONNECT_TOPIC_CREATION_DEFAULT_REPLICATION_FACTOR: 1
       CONNECT_TOPIC_CREATION_DEFAULT_PARTITIONS: 1
 
-      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      #CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      #CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      #CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      #CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
       # CLASSPATH required due to CC-2422
       CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.5.0.jar
@@ -144,20 +144,28 @@ services:
       CONSOLE_CONFIG_FILE: |
         kafka:
           brokers: ["kafka:29092"]
-          schemaRegistry:
-            enabled: true
-            urls: ["http://schema-registry:8081"]
         connect:
           enabled: true
           clusters:
             - name: connect
               url: http://kafka-connect:8083
+#      CONSOLE_CONFIG_FILE: |
+#        kafka:
+#          brokers: ["kafka:29092"]
+#          schemaRegistry:
+#            enabled: true
+#            urls: ["http://schema-registry:8081"]
+#        connect:
+#          enabled: true
+#          clusters:
+#            - name: connect
+#              url: http://kafka-connect:8083
     ports:
       - 8080:8080
     depends_on:
       - kafka
       - kafka-connect
-      - schema-registry
+      # - schema-registry
 
 
   oracle:
