@@ -1,5 +1,5 @@
 {
-    "name": "oracle-source-connector",
+    "name": "oracle-source-connector-v1",
     "connector.class": "io.debezium.connector.oracle.OracleConnector",
     "tasks.max": "1",
 
@@ -8,7 +8,8 @@
     "database.port": "1521",
     "database.user": "c##dbzuser",
     "database.password": "dbz",
-    "database.dbname": "XEPDB1",
+    "database.dbname": "XE",
+    "database.pdb.name" : "XEPDB1",
 
     "openlogreplicator.host": "openlogreplicator",
     "openlogreplicator.port": "9070",
@@ -26,7 +27,7 @@
     "value.converter.schema.registry.url": "http://schema-registry:8081",
 
     "include.schema.changes": "false",
-    "schema.history.internal.kafka.topic": "SCHEMA-CHANGES.ORACLE_CDC",
+    "schema.history.internal.kafka.topic": "SCHEMA-CHANGES.ORACLE_CDC_V1",
     "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
     "schema.history.internal.kafka.partitions": "1",
     "schema.history.internal.kafka.replication.factor": "1",
