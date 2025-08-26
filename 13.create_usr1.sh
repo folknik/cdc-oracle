@@ -1,43 +1,32 @@
 #!/bin/sh
 
-. cfg.sh
+export DB_CONTAINER=${DB_CONTAINER:=ORA1}
 
-docker exec ${DB_CONTAINER} /bin/bash -c "
-  export NLS_LANG=american_america.AL32UTF8
-  export ORACLE_SID=XE
-  . oraenv
 
-  sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
-    CREATE TABLESPACE TBLS1
-      DATAFILE '/opt/oracle/oradata/XE/XEPDB1/tbls1_01.dbf'
-      SIZE 100M AUTOEXTEND ON NEXT 100M;
+sql() {
+    docker exec ${DB_CONTAINER} /bin/bash -c "
+export NLS_LANG=american_america.AL32UTF8
+export ORACLE_SID=XE
+. oraenv
 
-    ALTER TABLESPACE TBLS1 FORCE LOGGING;
+sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
+  set echo off
+  set verify off
+  set heading off
+  set termout off
+  set showmode off
+  set linesize 5000
+  set pagesize 0
 
-    CREATE USER USR1 IDENTIFIED BY USR1PWD
-        DEFAULT TABLESPACE TBLS1
-        TEMPORARY TABLESPACE TEMP
-        QUOTA UNLIMITED ON TBLS1;
-
-    GRANT CREATE SESSION TO USR1;
-    GRANT CREATE TABLE TO USR1;
-    GRANT CREATE SEQUENCE TO USR1;
-    GRANT CREATE TRIGGER TO USR1;
-    GRANT CREATE PROCEDURE TO USR1;
-    GRANT CREATE VIEW TO USR1;
-
-    CREATE TABLE USR1.ADAM1(
-        ID         NUMBER NOT NULL,
-        NAME       VARCHAR2(30),
-        COUNT      NUMBER,
-        START_TIME TIMESTAMP
-    );
-    ALTER TABLE USR1.ADAM1 ADD CONSTRAINT ADAM1PK PRIMARY KEY(ID);
-
-    ALTER TABLE USR1.ADAM1 ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS;
-
-    EXIT;
-  EOF
+  spool /dev/stdout
+  @${1}
+  spool off
+EOF
 "
+}
+
+
+sql /opt/sql/13.create_usr1.sql
+
 
 echo "- all OK"
