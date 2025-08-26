@@ -8,8 +8,6 @@ docker exec ${DB_CONTAINER} /bin/bash -c "
   . oraenv
 
   sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
-
-    ALTER SESSION SET CONTAINER = XEPDB1;
     CREATE TABLESPACE TBLS1
       DATAFILE '/opt/oracle/oradata/XE/XEPDB1/tbls1_01.dbf'
       SIZE 100M AUTOEXTEND ON NEXT 100M;
