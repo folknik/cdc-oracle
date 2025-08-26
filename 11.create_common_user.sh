@@ -1,0 +1,32 @@
+#!/bin/sh
+
+. cfg.sh
+
+docker exec ${DB_CONTAINER} /bin/bash -c "
+  export NLS_LANG=american_america.AL32UTF8
+  export ORACLE_SID=XE
+  . oraenv
+
+  sqlplus sys/123@//localhost:1521/XE as sysdba <<- EOF
+    CREATE USER c##dbzuser IDENTIFIED BY dbz
+    DEFAULT TABLESPACE LOGMINER_TBS
+    QUOTA UNLIMITED ON LOGMINER_TBS
+    CONTAINER=ALL;
+
+    GRANT CREATE SESSION TO c##dbzuser CONTAINER=ALL;
+    GRANT SET CONTAINER TO c##dbzuser CONTAINER=ALL;
+    GRANT SELECT ON V_\$DATABASE TO c##dbzuser CONTAINER=ALL;
+    GRANT SELECT ANY DICTIONARY TO c##dbzuser CONTAINER=ALL;
+    GRANT LOCK ANY TABLE TO c##dbzuser CONTAINER=ALL;
+
+    GRANT SELECT ANY TABLE TO c##dbzuser CONTAINER=ALL;
+    GRANT FLASHBACK ANY TABLE TO c##dbzuser CONTAINER=ALL;
+    GRANT SELECT_CATALOG_ROLE TO c##dbzuser CONTAINER=ALL;
+    GRANT EXECUTE_CATALOG_ROLE TO c##dbzuser CONTAINER=ALL;
+    GRANT SELECT ANY TRANSACTION TO c##dbzuser CONTAINER=ALL;
+
+    EXIT;
+  EOF
+"
+
+echo "- all OK"

@@ -14,7 +14,7 @@ docker exec ${DB_CONTAINER} /bin/bash -c "
     COMMIT;
     UPDATE USR1.ADAM1 SET COUNT = COUNT + 1;
     COMMIT;
-    exit;
+    EXIT;
   EOF
 "
 
