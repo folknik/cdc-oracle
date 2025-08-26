@@ -13,7 +13,7 @@ The demo project includes the following components:
 - **OpenLogReplicator v1.8.6**  
   An open-source tool for parsing Oracle redo/archived logs and streaming changes to external systems.
 
-- **Debezium Oracle Connector v2.7.4**  
+- **Debezium Oracle Connector v3.2.1**  
   A Kafka Connect plugin that integrates with OpenLogReplicator and delivers change events into Apache Kafka topics.
 
 ## Architecture Overview
