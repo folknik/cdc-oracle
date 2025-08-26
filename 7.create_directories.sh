@@ -14,8 +14,8 @@ mkdir fra
 chmod 755 fra
 sudo chown 54321:54321 fra
 
-chmod a+x+r+w sql
-chmod a+r sql/*.sql
+#chmod a+x+r+w sql
+#chmod a+r sql/*.sql
 
 mkdir checkpoint
 chmod 777 checkpoint
