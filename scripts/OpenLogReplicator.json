@@ -13,7 +13,7 @@
         "server": "//oracle:1521/XEPDB1"
       },
       "format": {
-        "type": "protobuf"
+        "type": "json"
       }
     }
   ],

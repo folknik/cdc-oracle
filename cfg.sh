@@ -1,9 +1,9 @@
 #!/bin/bash
 
 export DB_IMAGE=${DB_IMAGE:=oracle/database:21.3.0-xe}
-export DB_CONTAINER=${DB_CONTAINER:=ORA1}
+export DB_CONTAINER=${DB_CONTAINER:=oracle}
 export OLR_IMAGE=${OLR_IMAGE:=bersler/openlogreplicator:debian-13.0}
-export OLR_CONTAINER=${OLR_CONTAINER:=OLR1}
+export OLR_CONTAINER=${OLR_CONTAINER:=openlogreplicator}
 export CONFLUENTINC_IMAGE_VERSION=${CONFLUENTINC_IMAGE_VERSION:=7.9.2}
 export REDPANDA_CONSOLE_IMAGE=${REDPANDA_CONSOLE_IMAGE:=redpandadata/console:v2.4.3}
 
