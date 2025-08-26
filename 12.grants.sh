@@ -22,7 +22,7 @@ sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
   @${1}
   spool off
 EOF
-" 1>/dev/null 2>&1
+"
 }
 
 
