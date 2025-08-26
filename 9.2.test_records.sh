@@ -1,0 +1,13 @@
+#!/bin/sh
+
+sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
+  INSERT INTO USR1.ADAM1 VALUES (101, 'Denis Sidorov', 10, TO_DATE('2019-08-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'));
+  COMMIT;
+  INSERT INTO USR1.ADAM1 VALUES (102, 'Ivan Pertov', 20, TO_DATE('2019-08-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'));
+  COMMIT;
+  UPDATE USR1.ADAM1 SET COUNT = COUNT + 1;
+  COMMIT;
+  exit;
+EOF
+
+echo "- all OK"
