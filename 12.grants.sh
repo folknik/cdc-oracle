@@ -4,10 +4,10 @@ export DB_CONTAINER=${DB_CONTAINER:=ORA1}
 
 
 sql() {
-    docker exec ${DB_CONTAINER} /bin/bash -c '
+    docker exec ${DB_CONTAINER} /bin/bash -c "
 export NLS_LANG=american_america.AL32UTF8
 export ORACLE_SID=XE
-. oraenv >/dev/null 2>&1
+. oraenv
 
 sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
   set echo off
@@ -22,7 +22,7 @@ sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
   @${1}
   spool off
 EOF
-'
+" 1>/dev/null 2>&1
 }
 
 
