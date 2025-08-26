@@ -12,16 +12,15 @@ export ORACLE_SID=XE
 sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
   set echo off
   set verify off
-  set heading on
-  set feedback on
-  set termout on
+  set heading off
+  set termout off
   set showmode off
   set linesize 5000
-  set pagesize 1000
-  set serveroutput on size unlimited
+  set pagesize 0
 
+  spool /dev/stdout
   @${1}
-
+  spool off
 EOF
 '
 }
