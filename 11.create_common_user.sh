@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export DB_CONTAINER=${DB_CONTAINER:=ORA1}
+export DB_CONTAINER=${DB_CONTAINER:=oracle}
 
 
 sql() {
