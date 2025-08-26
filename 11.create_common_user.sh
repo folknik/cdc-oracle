@@ -4,20 +4,26 @@ export DB_CONTAINER=${DB_CONTAINER:=ORA1}
 
 
 sql() {
-    docker exec ${DB_CONTAINER} /bin/bash -c "export NLS_LANG=american_america.AL32UTF8
+    docker exec ${DB_CONTAINER} /bin/bash -c '
+export NLS_LANG=american_america.AL32UTF8
 export ORACLE_SID=XE
-. oraenv
-sqlplus / as sysdba <<- EOF
-set echo off
-set verify off
-set heading off
-set termout off
-set showmode off
-set linesize 5000
-set pagesize 0
-@${1}
+. oraenv >/dev/null 2>&1
+
+sqlplus sys/123@//localhost:1521/XE as sysdba <<- EOF
+  set echo off
+  set verify off
+  set heading on
+  set feedback on
+  set termout on
+  set showmode off
+  set linesize 5000
+  set pagesize 1000
+  set serveroutput on size unlimited
+
+  @${1}
+
 EOF
-" 1>/dev/null 2>&1
+'
 }
 
 
