@@ -1,21 +1,32 @@
 #!/bin/sh
 
-. cfg.sh
+export DB_CONTAINER=${DB_CONTAINER:=ORA1}
 
-docker exec ${DB_CONTAINER} /bin/bash -c "
-  export NLS_LANG=american_america.AL32UTF8
-  export ORACLE_SID=XE
-  . oraenv
 
-  sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
-    INSERT INTO USR1.ADAM1 VALUES (101, 'Denis Sidorov', 10, TO_DATE('2019-08-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'));
-    COMMIT;
-    INSERT INTO USR1.ADAM1 VALUES (102, 'Ivan Pertov', 20, TO_DATE('2019-08-01 12:34:56', 'YYYY-MM-DD HH24:MI:SS'));
-    COMMIT;
-    UPDATE USR1.ADAM1 SET COUNT = COUNT + 1;
-    COMMIT;
-    EXIT;
-  EOF
+sql() {
+    docker exec ${DB_CONTAINER} /bin/bash -c "
+export NLS_LANG=american_america.AL32UTF8
+export ORACLE_SID=XE
+. oraenv
+
+sqlplus sys/123@//localhost:1521/XEPDB1 as sysdba <<- EOF
+  set echo off
+  set verify off
+  set heading off
+  set termout off
+  set showmode off
+  set linesize 5000
+  set pagesize 0
+
+  spool /dev/stdout
+  @${1}
+  spool off
+EOF
 "
+}
+
+
+sql /opt/sql/14.test_records.sql
+
 
 echo "- all OK"
